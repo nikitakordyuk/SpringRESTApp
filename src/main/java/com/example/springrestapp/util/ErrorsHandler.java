@@ -1,7 +1,7 @@
 package com.example.springrestapp.util;
 
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.FieldError;
 
 import java.util.List;
 
@@ -9,15 +9,15 @@ public class ErrorsHandler {
     public static String getErrors(BindingResult bindingResult) {
         StringBuilder errorMessage = new StringBuilder();
 
-        List<ObjectError> errors = bindingResult.getAllErrors();
+        List<FieldError> errors = bindingResult.getFieldErrors();
 
-        for (ObjectError error : errors) {
-            errorMessage
-                    .append(error.getObjectName())
+        for (FieldError error : errors) {
+            errorMessage.append(error.getField())
                     .append(" - ")
-                    .append(error.getDefaultMessage())
+                    .append(error.getDefaultMessage() == null ? error.getCode() : error.getDefaultMessage())
                     .append(";");
         }
+
         return errorMessage.toString();
     }
 }

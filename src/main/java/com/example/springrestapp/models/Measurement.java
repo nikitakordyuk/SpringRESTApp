@@ -3,7 +3,8 @@ package com.example.springrestapp.models;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Measurement")
@@ -16,27 +17,20 @@ public class Measurement {
     @Column(name = "value")
     @Min(value = -100, message = "Value should be bigger than -100")
     @Max(value = 100, message = "Value should be less than 100")
-    private float value;
+    @NotNull
+    private Double value;
 
+    @NotNull
     @Column(name = "raining")
-    private boolean raining;
+    private Boolean isRaining;
 
-    @NotEmpty
-    @Column(name = "sensor_name")
-    private String sensorName;
-
+    @Column(name = "measurement_date_time")
+    @NotNull
+    private LocalDateTime measurementDateTime;
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "sensor_name", referencedColumnName = "name", insertable = false, updatable = false)
+    @JoinColumn(name = "sensor", referencedColumnName = "name")
     private Sensor sensor;
-
-    public Measurement() {
-    }
-
-    public Measurement(float value, boolean raining, String sensorName) {
-        this.value = value;
-        this.raining = raining;
-        this.sensorName = sensorName;
-    }
 
     public int getId() {
         return id;
@@ -46,28 +40,20 @@ public class Measurement {
         this.id = id;
     }
 
-    public float getValue() {
+    public Boolean getRaining() {
+        return isRaining;
+    }
+
+    public void setRaining(Boolean raining) {
+        isRaining = raining;
+    }
+
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(Double value) {
         this.value = value;
-    }
-
-    public boolean isRaining() {
-        return raining;
-    }
-
-    public void setRaining(boolean raining) {
-        this.raining = raining;
-    }
-
-    public String getSensorName() {
-        return sensorName;
-    }
-
-    public void setSensorName(String sensorName) {
-        this.sensorName = sensorName;
     }
 
     public Sensor getSensor() {
@@ -78,13 +64,11 @@ public class Measurement {
         this.sensor = sensor;
     }
 
-    @Override
-    public String toString() {
-        return "Measurement{" +
-               "value=" + value +
-               ", raining=" + raining +
-               ", sensorName='" + sensorName + '\'' +
-               ", sensor=" + sensor +
-               '}';
+    public LocalDateTime getMeasurementDateTime() {
+        return measurementDateTime;
+    }
+
+    public void setMeasurementDateTime(LocalDateTime measurementDateTime) {
+        this.measurementDateTime = measurementDateTime;
     }
 }

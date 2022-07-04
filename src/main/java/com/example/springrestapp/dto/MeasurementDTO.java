@@ -1,58 +1,43 @@
 package com.example.springrestapp.dto;
 
-import com.example.springrestapp.models.Sensor;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class MeasurementDTO {
+    @NotNull
     @Min(value = -100, message = "Value should be bigger than -100")
     @Max(value = 100, message = "Value should be less than 100")
-    private float value;
+    private Double value;
 
-    private boolean raining;
+    @NotNull
+    private Boolean isRaining;
 
-    private Sensor sensor;
+    @NotNull
+    private SensorDTO sensor;
 
-    public MeasurementDTO() {
-    }
-
-    public MeasurementDTO(float value, boolean raining, Sensor sensor) {
-        this.value = value;
-        this.raining = raining;
-        this.sensor = sensor;
-    }
-
-    public float getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
-    public boolean isRaining() {
-        return raining;
+    public Boolean getRaining() {
+        return isRaining;
     }
 
-    public void setRaining(boolean raining) {
-        this.raining = raining;
+    public void setRaining(Boolean raining) {
+        isRaining = raining;
     }
 
-    public Sensor getSensor() {
+    public SensorDTO getSensor() {
         return sensor;
     }
 
-    public void setSensor(Sensor sensor) {
+    public void setSensor(SensorDTO sensor) {
         this.sensor = sensor;
     }
 
-    @Override
-    public String toString() {
-        return "MeasurementDTO{" +
-               "value=" + value +
-               ", raining=" + raining +
-               ", sensor=" + sensor +
-               '}';
-    }
 }

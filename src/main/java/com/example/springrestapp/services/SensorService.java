@@ -34,7 +34,7 @@ public class SensorService {
     }
 
     public Optional<Sensor> findSensorByName(String name) {
-        return sensorRepository.findSensorByName(name);
+        return sensorRepository.findByName(name);
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package com.example.springrestapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,24 +16,17 @@ public class Sensor implements Serializable {
 
     @Column(name = "name")
     @NotEmpty(message = "Should not be empty")
+    @Size(min = 3, max = 30, message = "Name size should be between 3 and 30 characters")
     private String name;
 
-    @OneToMany(mappedBy = "sensor")
-    private List<Measurement> measurementList;
+//    @OneToMany(mappedBy = "sensor")
+//    private List<Measurement> measurementList;
 
     public Sensor() {
     }
 
     public Sensor(String name) {
         this.name = name;
-    }
-
-    public List<Measurement> getMeasurementList() {
-        return measurementList;
-    }
-
-    public void setMeasurementList(List<Measurement> measurementList) {
-        this.measurementList = measurementList;
     }
 
     public int getId() {

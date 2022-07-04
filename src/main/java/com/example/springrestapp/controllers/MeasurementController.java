@@ -1,10 +1,13 @@
 package com.example.springrestapp.controllers;
 
 import com.example.springrestapp.dto.MeasurementDTO;
+import com.example.springrestapp.dto.MeasurementResponse;
+import com.example.springrestapp.models.Measurement;
 import com.example.springrestapp.services.MeasurementService;
 import com.example.springrestapp.util.ErrorResponse;
 import com.example.springrestapp.util.ErrorsHandler;
 import com.example.springrestapp.util.measurement.MeasurementNotCreatedException;
+import com.example.springrestapp.util.measurement.MeasurementValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,39 +24,38 @@ import java.util.stream.Collectors;
 public class MeasurementController {
     private final MeasurementService measurementService;
 
-    private final ModelMapper modelMapper;
+    private final MeasurementValidator measurementValidator;
 
     @Autowired
-    public MeasurementController(MeasurementService measurementService, ModelMapper modelMapper) {
+    public MeasurementController(MeasurementService measurementService, MeasurementValidator measurementValidator) {
         this.measurementService = measurementService;
-        this.modelMapper = modelMapper;
+        this.measurementValidator = measurementValidator;
     }
 
     @GetMapping()
-    public List<MeasurementDTO> getMeasurements() {
-        return measurementService.measurementList()
+    public MeasurementResponse getMeasurements() {
+        return new MeasurementResponse(measurementService.measurementList()
                 .stream()
                 .map(measurementService::convertToMeasurementDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/rainyDaysCount")
-    public String rainyDaysCount() {
-        String wasWere = measurementService.rainyDaysCount() > 1 ? "were " : "was ";
-        String dayDays = measurementService.rainyDaysCount() > 1 ? "days " : "day ";
-
-        return "There " + wasWere + measurementService.rainyDaysCount() + " rainy " + dayDays;
+    public Long rainyDaysCount() {
+        return measurementService.rainyDaysCount();
     }
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> add(@RequestBody @Valid MeasurementDTO measurementDTO,
                                           BindingResult bindingResult) {
+        Measurement measurement = measurementService.convertToMeasurement(measurementDTO);
+
+        measurementValidator.validate(measurement, bindingResult);
+
         if (bindingResult.hasErrors())
             throw new MeasurementNotCreatedException(ErrorsHandler.getErrors(bindingResult));
 
-        if (!measurementService.save(measurementDTO)) {
-            throw new MeasurementNotCreatedException("Sensor with name does not exist");
-        }
+        measurementService.save(measurement);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
