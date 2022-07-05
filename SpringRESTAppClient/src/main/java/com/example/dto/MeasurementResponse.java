@@ -1,4 +1,4 @@
-package com.example.springrestapp.dto;
+package com.example.dto;
 
 import java.util.List;
 
